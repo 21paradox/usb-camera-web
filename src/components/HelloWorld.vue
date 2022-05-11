@@ -17,7 +17,7 @@
       </option>
     </select>
     <div class="divider"></div>
-    <video v-show="showVideo" controls ref="videoElem" autoplay muted></video>
+    <video v-show="showVideo" controls ref="videoElem" autoplay muted class="cameravideo"></video>
   </div>
 </template>
 
@@ -87,5 +87,8 @@ export default {
 }
 .divider {
   height: 20px;
+}
+.cameravideo {
+  max-width: 100%;
 }
 </style>
