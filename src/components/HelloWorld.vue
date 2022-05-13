@@ -48,7 +48,6 @@
 
     <div class="divider"></div>
     <button @click="beginCapture">beginCapture</button>
-    <button @click="requestDevice">requestDevice</button>
 
     <div class="divider"></div>
     <video
