@@ -10,7 +10,7 @@
     <div class="divider"></div>
     <button @click="requestCameraAuth">requestCameraAuth</button>
 
-    <fieldset class="constraints">
+    <fieldset class="constraints flex">
       <legend>Select Device</legend>
       <label>
         video:
@@ -38,7 +38,17 @@
       </label>
     </fieldset>
 
+    <div class="divider"></div>
+    <fieldset class="constraints">
+      <legend>log:</legend>
+      <pre>{{ this.deviceList[selectedVideoDevice] }}</pre>
+      <br />
+      <pre>{{ this.deviceList[selectedAudioDevice] }}</pre>
+    </fieldset>
+
+    <div class="divider"></div>
     <button @click="beginCapture">beginCapture</button>
+    <button @click="requestDevice">requestDevice</button>
 
     <div class="divider"></div>
     <video
@@ -72,6 +82,18 @@ export default {
     };
   },
   methods: {
+    async requestDevice() {
+      const device = await navigator.usb.requestDevice({
+        filters: [
+          {
+            vendorId: 0x534d,
+          },
+        ],
+      });
+      console.log(device);
+      await device.open();
+      await device.selectConfiguration(1);
+    },
     async requestCameraAuth() {
       navigator.mediaDevices.getUserMedia({
         video: true,
@@ -108,9 +130,11 @@ export default {
   width: 800px;
   margin: auto;
 }
+.flex {
+  display: flex;
+}
 .constraints {
   text-align: left;
-  display: flex;
 }
 .constraints label {
   margin-right: 10px;
