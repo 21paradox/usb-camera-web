@@ -8,16 +8,46 @@
     </fieldset>
 
     <div class="divider"></div>
-    <button @click="requestCameraAuth" style="margin-right: 10px">
-      requestCameraAuth
-    </button>
-    <select v-if="deviceList.length > 0" @change="selectDevice">
-      <option v-for="(device, index) in deviceList" :key="index" :value="index">
-        {{ device.kind + ' ' + device.label }}
-      </option>
-    </select>
+    <button @click="requestCameraAuth">requestCameraAuth</button>
+
+    <fieldset class="constraints">
+      <legend>Select Device</legend>
+      <label>
+        video:
+        <select v-if="deviceList.length > 0" v-model="selectedVideoDevice">
+          <option
+            v-for="(device, index) in deviceList"
+            :key="index"
+            :value="index"
+          >
+            {{ device.kind + ' ' + device.label }}
+          </option>
+        </select>
+      </label>
+      <label>
+        audio:
+        <select v-if="deviceList.length > 0" v-model="selectedAudioDevice">
+          <option
+            v-for="(device, index) in deviceList"
+            :key="index"
+            :value="index"
+          >
+            {{ device.kind + ' ' + device.label }}
+          </option>
+        </select>
+      </label>
+    </fieldset>
+
+    <button @click="beginCapture">beginCapture</button>
+
     <div class="divider"></div>
-    <video v-show="showVideo" controls ref="videoElem" autoplay muted class="cameravideo"></video>
+    <video
+      v-show="showVideo"
+      autoplay
+      controls
+      ref="videoElem"
+      class="cameravideo"
+    ></video>
   </div>
 </template>
 
@@ -36,39 +66,38 @@ export default {
       height: 1080,
       frameRate: 60,
       showVideo: false,
+
+      selectedVideoDevice: -1,
+      selectedAudioDevice: -1,
     };
   },
   methods: {
-    async selectDevice(event) {
-      const device = this.deviceList[event.target.value];
-      const media = await navigator.mediaDevices.getUserMedia({
-        video: {
-          deviceId: device.deviceId,
-          width: this.width,
-          height: this.height,
-          frameRate: this.frameRate,
-        },
-      });
-      this.$refs.videoElem.srcObject = media;
-      this.showVideo = true;
-      // this.deviceSelected = devices[0];
-      // for (let device of devices) addDevice(device);
-      // selectDevice(devices[0]);
-    },
     async requestCameraAuth() {
-      const media = navigator.mediaDevices.getUserMedia({
+      navigator.mediaDevices.getUserMedia({
         video: true,
+      });
+      navigator.mediaDevices.getUserMedia({
+        audio: true,
       });
       const devices = await navigator.mediaDevices.enumerateDevices();
       this.deviceList = devices;
       console.log(devices);
-      return media;
     },
     async beginCapture() {
-      const media = navigator.mediaDevices.getUserMedia({
-        video: true,
+      const media = await navigator.mediaDevices.getUserMedia({
+        video: {
+          deviceId: this.deviceList[this.selectedVideoDevice].deviceId,
+          width: this.width,
+          height: this.height,
+          frameRate: this.frameRate,
+        },
+        audio: {
+          deviceId: this.deviceList[this.selectedAudioDevice].deviceId,
+        },
       });
-      return media;
+      console.log(media);
+      this.$refs.videoElem.srcObject = media;
+      this.showVideo = true;
     },
   },
 };
@@ -81,6 +110,7 @@ export default {
 }
 .constraints {
   text-align: left;
+  display: flex;
 }
 .constraints label {
   margin-right: 10px;
