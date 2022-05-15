@@ -61,9 +61,6 @@
 </template>
 
 <script>
-import Plyr from 'plyr';
-import 'plyr/dist/plyr.css';
-
 export default {
   name: 'HelloWorld',
   props: {
@@ -120,28 +117,8 @@ export default {
         },
       });
       console.log(media);
+      this.$refs.videoElem.srcObject = media;
       this.showVideo = true;
-
-      this.$nextTick(() => {
-        const player = new Plyr(this.$refs.videoElem, {
-          controls: ['mute', 'volume', 'fullscreen'],
-          keyboard: {
-            focused: true,
-            global: true,
-          },
-          autoplay: true,
-          clickToPlay: false,
-          listeners: {
-            fullscreen: (e) => {
-              if (!e.pointerType) {
-                e.preventDefault();
-              }
-            },
-          },
-        });
-        this.$refs.videoElem.srcObject = media;
-        console.log(player);
-      });
     },
   },
 };
