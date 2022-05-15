@@ -53,10 +53,11 @@
     <video
       v-show="showVideo"
       autoplay
-      controls
       ref="videoElem"
       class="cameravideo"
     ></video>
+    <div class="divider"></div>
+    <button v-show="showVideo" @click="requestfull">fullscreen video</button>
   </div>
 </template>
 
@@ -120,6 +121,9 @@ export default {
       this.$refs.videoElem.srcObject = media;
       this.showVideo = true;
     },
+    requestfull() {
+       this.$refs.videoElem.requestFullscreen()
+    }
   },
 };
 </script>
