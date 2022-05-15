@@ -50,12 +50,14 @@
     <button @click="beginCapture">beginCapture</button>
 
     <div class="divider"></div>
-    <video
-      v-show="showVideo"
-      autoplay
-      ref="videoElem"
-      class="cameravideo"
-    ></video>
+    <div ref="videoWrapper" class="videowrapper">
+      <video
+        v-show="showVideo"
+        autoplay
+        ref="videoElem"
+        class="cameravideo"
+      ></video>
+    </div>
     <div class="divider"></div>
     <button v-show="showVideo" @click="requestfull">fullscreen video</button>
   </div>
@@ -122,8 +124,8 @@ export default {
       this.showVideo = true;
     },
     requestfull() {
-       this.$refs.videoElem.requestFullscreen()
-    }
+      this.$refs.videoWrapper.requestFullscreen();
+    },
   },
 };
 </script>
@@ -147,5 +149,20 @@ export default {
 }
 .cameravideo {
   max-width: 100%;
+}
+.videowrapper:fullscreen {
+ width: 100%;
+ height: 100%;
+ position: fixed;
+ top:0;
+ left: 0;
+ bottom: 0;
+ right: 0;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+.videowrapper:fullscreen .cameravideo {
+  max-height: 100%;
 }
 </style>
