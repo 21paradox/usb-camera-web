@@ -50,7 +50,7 @@
     <button @click="beginCapture">beginCapture</button>
 
     <div class="divider"></div>
-    <div ref="videoWrapper" class="videowrapper">
+    <div ref="videoWrapper" class="videowrapper" allow>
       <video
         v-show="showVideo"
         autoplay
@@ -98,10 +98,14 @@ export default {
     },
     async requestCameraAuth() {
       navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          //  vendorId: 0x534d,
+        },
       });
       navigator.mediaDevices.getUserMedia({
-        audio: true,
+        audio: {
+          //  vendorId: 0x534d,
+        },
       });
       const devices = await navigator.mediaDevices.enumerateDevices();
       this.deviceList = devices;
@@ -124,7 +128,11 @@ export default {
       this.showVideo = true;
     },
     requestfull() {
-      this.$refs.videoWrapper.requestFullscreen();
+      if (this.$refs.videoWrapper.webkitRequestFullscreen) {
+        this.$refs.videoWrapper.webkitRequestFullscreen();
+      } else if(this.$refs.videoWrapper.requestFullscreen()) {
+        this.$refs.videoWrapper.requestFullscreen();
+      }
     },
   },
 };
@@ -161,6 +169,7 @@ export default {
  display: flex;
  align-items: center;
  justify-content: center;
+ background-color: rgba(255, 255, 255, 0.5);
 }
 .videowrapper:fullscreen .cameravideo {
   max-height: 100%;
